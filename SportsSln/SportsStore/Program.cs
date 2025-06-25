@@ -22,11 +22,11 @@ var app = builder.Build();
 
 app.UseStaticFiles();
 
-app.UseRouting();
+app.MapControllerRoute("pagination",
+    "Products/Page{productPage}",
+    new {Controller="Home",action="Index"});
+// app.UseRouting();
 app.MapDefaultControllerRoute();
-// app.MapControllerRoute(
-//     name: "default",
-//     pattern: "{controller=Home}/{action=Index}/{id?}");
 SeedData.EnsurePopulated(app);
 //dotnet ef database drop --force --context StoreDbContext   =>command in npowershell to restore the powershell
 
