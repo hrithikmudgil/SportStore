@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "Sd4mVyGbhNtjm6vlRyOf4xTYWFmrvl9L4rtar8Qve9A=",
+  "Hash": "Z/pzYdiNAqLW4JtUcJ8ZjJe16lVC4CgC6RV0mMOfIGg=",
   "Source": "SportsStore",
   "BasePath": "_content/SportsStore",
   "Mode": "Default",
@@ -10,7 +10,7 @@
     {
       "Name": "SportsStore\\wwwroot",
       "Source": "SportsStore",
-      "ContentRoot": "C:\\Github\\SportsSln\\Sportsstore\\wwwroot\\",
+      "ContentRoot": "C:\\Github\\SportStore\\SportsSln\\SportsStore\\wwwroot\\",
       "BasePath": "_content/SportsStore",
       "Pattern": "**"
     }
