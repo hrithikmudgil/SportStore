@@ -1,0 +1,19 @@
+{
+  "Version": 1,
+  "Hash": "Sd4mVyGbhNtjm6vlRyOf4xTYWFmrvl9L4rtar8Qve9A=",
+  "Source": "SportsStore",
+  "BasePath": "_content/SportsStore",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [
+    {
+      "Name": "SportsStore\\wwwroot",
+      "Source": "SportsStore",
+      "ContentRoot": "C:\\Github\\SportsSln\\Sportsstore\\wwwroot\\",
+      "BasePath": "_content/SportsStore",
+      "Pattern": "**"
+    }
+  ],
+  "Assets": []
+}
