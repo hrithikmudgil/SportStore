@@ -333,3 +333,4 @@ C:\Github\SportStore\SportsSln\SportsStore\obj\Debug\net8.0\refint\SportsStore.d
 C:\Github\SportStore\SportsSln\SportsStore\obj\Debug\net8.0\SportsStore.pdb
 C:\Github\SportStore\SportsSln\SportsStore\obj\Debug\net8.0\SportsStore.genruntimeconfig.cache
 C:\Github\SportStore\SportsSln\SportsStore\obj\Debug\net8.0\ref\SportsStore.dll
+C:\Github\SportStore\SportsSln\SportsStore\bin\Debug\net8.0\libman.json
