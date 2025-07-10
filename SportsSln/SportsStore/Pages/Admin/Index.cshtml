@@ -2,17 +2,22 @@
 @{
     Layout = null;
 }
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
 
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta content="width=device-width" name="viewport" />
-        <title>SportsStore</title>
-        <link href="/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
-        <base href="/" />
-    </head>
-    <body>
-        <component type="typeof(Routed)" render-mode="Server" /> @*used to insert a Razor Component*@
-        <script src="/_framework/blazor.server.js"></script>
-    </body>
+
+<head>
+    <meta content="width=device-width" name="viewport" />
+    <title>SportsStore</title>
+    <link href="@Url.Content("~/")lib/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <base href="/" />
+</head>
+
+<body>
+    <component type="typeof(Routed)" render-mode="Server" /> @*used to insert a Razor Component*@
+    <script src="/_framework/blazor.server.js"></script>
+</body>
+
 </html>

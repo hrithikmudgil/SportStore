@@ -1,0 +1,326 @@
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (266ms) [Parameters=[], CommandType='Text', CommandTimeout='60']
+      CREATE DATABASE [SportsStore];
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (108ms) [Parameters=[], CommandType='Text', CommandTimeout='60']
+      IF SERVERPROPERTY('EngineEdition') <> 5
+      BEGIN
+          ALTER DATABASE [SportsStore] SET READ_COMMITTED_SNAPSHOT ON;
+      END;
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (6ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT 1
+info: Microsoft.EntityFrameworkCore.Migrations[20411]
+      Acquiring an exclusive lock for migration application. See https://aka.ms/efcore-docs-migrations-lock for more information if this takes too long.
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (13ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      DECLARE @result int;
+      EXEC @result = sp_getapplock @Resource = '__EFMigrationsLock', @LockOwner = 'Session', @LockMode = 'Exclusive';
+      SELECT @result
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (8ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      IF OBJECT_ID(N'[__EFMigrationsHistory]') IS NULL
+      BEGIN
+          CREATE TABLE [__EFMigrationsHistory] (
+              [MigrationId] nvarchar(150) NOT NULL,
+              [ProductVersion] nvarchar(32) NOT NULL,
+              CONSTRAINT [PK___EFMigrationsHistory] PRIMARY KEY ([MigrationId])
+          );
+      END;
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT 1
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (4ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT [MigrationId], [ProductVersion]
+      FROM [__EFMigrationsHistory]
+      ORDER BY [MigrationId];
+info: Microsoft.EntityFrameworkCore.Migrations[20402]
+      Applying migration '20250615005144_Initial'.
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (4ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE TABLE [Products] (
+          [ProductID] bigint NOT NULL IDENTITY,
+          [Name] nvarchar(max) NOT NULL,
+          [Description] nvarchar(max) NOT NULL,
+          [Price] decimal(8,2) NOT NULL,
+          [Category] nvarchar(max) NOT NULL,
+          CONSTRAINT [PK_Products] PRIMARY KEY ([ProductID])
+      );
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+      VALUES (N'20250615005144_Initial', N'9.0.6');
+info: Microsoft.EntityFrameworkCore.Migrations[20402]
+      Applying migration '20250628225545_Orders'.
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE TABLE [Orders] (
+          [OrderID] int NOT NULL IDENTITY,
+          [Name] nvarchar(max) NOT NULL,
+          [Line1] nvarchar(max) NOT NULL,
+          [Line2] nvarchar(max) NULL,
+          [Line3] nvarchar(max) NULL,
+          [City] nvarchar(max) NOT NULL,
+          [State] nvarchar(max) NOT NULL,
+          [Zip] nvarchar(max) NULL,
+          [Country] nvarchar(max) NOT NULL,
+          [GiftWrap] bit NOT NULL,
+          CONSTRAINT [PK_Orders] PRIMARY KEY ([OrderID])
+      );
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE TABLE [CartLine] (
+          [CartLineID] int NOT NULL IDENTITY,
+          [ProductID] bigint NOT NULL,
+          [Quantity] int NOT NULL,
+          [OrderID] int NULL,
+          CONSTRAINT [PK_CartLine] PRIMARY KEY ([CartLineID]),
+          CONSTRAINT [FK_CartLine_Orders_OrderID] FOREIGN KEY ([OrderID]) REFERENCES [Orders] ([OrderID]),
+          CONSTRAINT [FK_CartLine_Products_ProductID] FOREIGN KEY ([ProductID]) REFERENCES [Products] ([ProductID]) ON DELETE CASCADE
+      );
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (4ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_CartLine_OrderID] ON [CartLine] ([OrderID]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_CartLine_ProductID] ON [CartLine] ([ProductID]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+      VALUES (N'20250628225545_Orders', N'9.0.6');
+info: Microsoft.EntityFrameworkCore.Migrations[20402]
+      Applying migration '20250629084721_ShippedOrders'.
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (11ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      ALTER TABLE [Orders] ADD [Shipped] bit NOT NULL DEFAULT CAST(0 AS bit);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+      VALUES (N'20250629084721_ShippedOrders', N'9.0.6');
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      DECLARE @result int;
+      EXEC @result = sp_releaseapplock @Resource = '__EFMigrationsLock', @LockOwner = 'Session';
+      SELECT @result
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT CASE
+          WHEN EXISTS (
+              SELECT 1
+              FROM [Products] AS [p]) THEN CAST(1 AS bit)
+          ELSE CAST(0 AS bit)
+      END
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (27ms) [Parameters=[@p0='?' (Size = 4000), @p1='?' (Size = 4000), @p2='?' (Size = 4000), @p3='?' (Precision = 8) (Scale = 2) (DbType = Decimal), @p4='?' (Size = 4000), @p5='?' (Size = 4000), @p6='?' (Size = 4000), @p7='?' (Precision = 8) (Scale = 2) (DbType = Decimal), @p8='?' (Size = 4000), @p9='?' (Size = 4000), @p10='?' (Size = 4000), @p11='?' (Precision = 8) (Scale = 2) (DbType = Decimal), @p12='?' (Size = 4000), @p13='?' (Size = 4000), @p14='?' (Size = 4000), @p15='?' (Precision = 8) (Scale = 2) (DbType = Decimal), @p16='?' (Size = 4000), @p17='?' (Size = 4000), @p18='?' (Size = 4000), @p19='?' (Precision = 8) (Scale = 2) (DbType = Decimal), @p20='?' (Size = 4000), @p21='?' (Size = 4000), @p22='?' (Size = 4000), @p23='?' (Precision = 8) (Scale = 2) (DbType = Decimal), @p24='?' (Size = 4000), @p25='?' (Size = 4000), @p26='?' (Size = 4000), @p27='?' (Precision = 8) (Scale = 2) (DbType = Decimal), @p28='?' (Size = 4000), @p29='?' (Size = 4000), @p30='?' (Size = 4000), @p31='?' (Precision = 8) (Scale = 2) (DbType = Decimal), @p32='?' (Size = 4000), @p33='?' (Size = 4000), @p34='?' (Size = 4000), @p35='?' (Precision = 8) (Scale = 2) (DbType = Decimal)], CommandType='Text', CommandTimeout='30']
+      SET IMPLICIT_TRANSACTIONS OFF;
+      SET NOCOUNT ON;
+      MERGE [Products] USING (
+      VALUES (@p0, @p1, @p2, @p3, 0),
+      (@p4, @p5, @p6, @p7, 1),
+      (@p8, @p9, @p10, @p11, 2),
+      (@p12, @p13, @p14, @p15, 3),
+      (@p16, @p17, @p18, @p19, 4),
+      (@p20, @p21, @p22, @p23, 5),
+      (@p24, @p25, @p26, @p27, 6),
+      (@p28, @p29, @p30, @p31, 7),
+      (@p32, @p33, @p34, @p35, 8)) AS i ([Category], [Description], [Name], [Price], _Position) ON 1=0
+      WHEN NOT MATCHED THEN
+      INSERT ([Category], [Description], [Name], [Price])
+      VALUES (i.[Category], i.[Description], i.[Name], i.[Price])
+      OUTPUT INSERTED.[ProductID], i._Position;
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (246ms) [Parameters=[], CommandType='Text', CommandTimeout='60']
+      CREATE DATABASE [Identity];
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (91ms) [Parameters=[], CommandType='Text', CommandTimeout='60']
+      IF SERVERPROPERTY('EngineEdition') <> 5
+      BEGIN
+          ALTER DATABASE [Identity] SET READ_COMMITTED_SNAPSHOT ON;
+      END;
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT 1
+info: Microsoft.EntityFrameworkCore.Migrations[20411]
+      Acquiring an exclusive lock for migration application. See https://aka.ms/efcore-docs-migrations-lock for more information if this takes too long.
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (3ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      DECLARE @result int;
+      EXEC @result = sp_getapplock @Resource = '__EFMigrationsLock', @LockOwner = 'Session', @LockMode = 'Exclusive';
+      SELECT @result
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (6ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      IF OBJECT_ID(N'[__EFMigrationsHistory]') IS NULL
+      BEGIN
+          CREATE TABLE [__EFMigrationsHistory] (
+              [MigrationId] nvarchar(150) NOT NULL,
+              [ProductVersion] nvarchar(32) NOT NULL,
+              CONSTRAINT [PK___EFMigrationsHistory] PRIMARY KEY ([MigrationId])
+          );
+      END;
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT 1
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT [MigrationId], [ProductVersion]
+      FROM [__EFMigrationsHistory]
+      ORDER BY [MigrationId];
+info: Microsoft.EntityFrameworkCore.Migrations[20402]
+      Applying migration '20250702035750_Initial'.
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE TABLE [AspNetRoles] (
+          [Id] nvarchar(450) NOT NULL,
+          [Name] nvarchar(256) NULL,
+          [NormalizedName] nvarchar(256) NULL,
+          [ConcurrencyStamp] nvarchar(max) NULL,
+          CONSTRAINT [PK_AspNetRoles] PRIMARY KEY ([Id])
+      );
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE TABLE [AspNetUsers] (
+          [Id] nvarchar(450) NOT NULL,
+          [UserName] nvarchar(256) NULL,
+          [NormalizedUserName] nvarchar(256) NULL,
+          [Email] nvarchar(256) NULL,
+          [NormalizedEmail] nvarchar(256) NULL,
+          [EmailConfirmed] bit NOT NULL,
+          [PasswordHash] nvarchar(max) NULL,
+          [SecurityStamp] nvarchar(max) NULL,
+          [ConcurrencyStamp] nvarchar(max) NULL,
+          [PhoneNumber] nvarchar(max) NULL,
+          [PhoneNumberConfirmed] bit NOT NULL,
+          [TwoFactorEnabled] bit NOT NULL,
+          [LockoutEnd] datetimeoffset NULL,
+          [LockoutEnabled] bit NOT NULL,
+          [AccessFailedCount] int NOT NULL,
+          CONSTRAINT [PK_AspNetUsers] PRIMARY KEY ([Id])
+      );
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE TABLE [AspNetRoleClaims] (
+          [Id] int NOT NULL IDENTITY,
+          [RoleId] nvarchar(450) NOT NULL,
+          [ClaimType] nvarchar(max) NULL,
+          [ClaimValue] nvarchar(max) NULL,
+          CONSTRAINT [PK_AspNetRoleClaims] PRIMARY KEY ([Id]),
+          CONSTRAINT [FK_AspNetRoleClaims_AspNetRoles_RoleId] FOREIGN KEY ([RoleId]) REFERENCES [AspNetRoles] ([Id]) ON DELETE CASCADE
+      );
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE TABLE [AspNetUserClaims] (
+          [Id] int NOT NULL IDENTITY,
+          [UserId] nvarchar(450) NOT NULL,
+          [ClaimType] nvarchar(max) NULL,
+          [ClaimValue] nvarchar(max) NULL,
+          CONSTRAINT [PK_AspNetUserClaims] PRIMARY KEY ([Id]),
+          CONSTRAINT [FK_AspNetUserClaims_AspNetUsers_UserId] FOREIGN KEY ([UserId]) REFERENCES [AspNetUsers] ([Id]) ON DELETE CASCADE
+      );
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE TABLE [AspNetUserLogins] (
+          [LoginProvider] nvarchar(450) NOT NULL,
+          [ProviderKey] nvarchar(450) NOT NULL,
+          [ProviderDisplayName] nvarchar(max) NULL,
+          [UserId] nvarchar(450) NOT NULL,
+          CONSTRAINT [PK_AspNetUserLogins] PRIMARY KEY ([LoginProvider], [ProviderKey]),
+          CONSTRAINT [FK_AspNetUserLogins_AspNetUsers_UserId] FOREIGN KEY ([UserId]) REFERENCES [AspNetUsers] ([Id]) ON DELETE CASCADE
+      );
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE TABLE [AspNetUserRoles] (
+          [UserId] nvarchar(450) NOT NULL,
+          [RoleId] nvarchar(450) NOT NULL,
+          CONSTRAINT [PK_AspNetUserRoles] PRIMARY KEY ([UserId], [RoleId]),
+          CONSTRAINT [FK_AspNetUserRoles_AspNetRoles_RoleId] FOREIGN KEY ([RoleId]) REFERENCES [AspNetRoles] ([Id]) ON DELETE CASCADE,
+          CONSTRAINT [FK_AspNetUserRoles_AspNetUsers_UserId] FOREIGN KEY ([UserId]) REFERENCES [AspNetUsers] ([Id]) ON DELETE CASCADE
+      );
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE TABLE [AspNetUserTokens] (
+          [UserId] nvarchar(450) NOT NULL,
+          [LoginProvider] nvarchar(450) NOT NULL,
+          [Name] nvarchar(450) NOT NULL,
+          [Value] nvarchar(max) NULL,
+          CONSTRAINT [PK_AspNetUserTokens] PRIMARY KEY ([UserId], [LoginProvider], [Name]),
+          CONSTRAINT [FK_AspNetUserTokens_AspNetUsers_UserId] FOREIGN KEY ([UserId]) REFERENCES [AspNetUsers] ([Id]) ON DELETE CASCADE
+      );
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_AspNetRoleClaims_RoleId] ON [AspNetRoleClaims] ([RoleId]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE UNIQUE INDEX [RoleNameIndex] ON [AspNetRoles] ([NormalizedName]) WHERE [NormalizedName] IS NOT NULL;
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_AspNetUserClaims_UserId] ON [AspNetUserClaims] ([UserId]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_AspNetUserLogins_UserId] ON [AspNetUserLogins] ([UserId]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_AspNetUserRoles_RoleId] ON [AspNetUserRoles] ([RoleId]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (3ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [EmailIndex] ON [AspNetUsers] ([NormalizedEmail]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE UNIQUE INDEX [UserNameIndex] ON [AspNetUsers] ([NormalizedUserName]) WHERE [NormalizedUserName] IS NOT NULL;
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+      VALUES (N'20250702035750_Initial', N'9.0.6');
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      DECLARE @result int;
+      EXEC @result = sp_releaseapplock @Resource = '__EFMigrationsLock', @LockOwner = 'Session';
+      SELECT @result
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (10ms) [Parameters=[@__normalizedUserName_0='?' (Size = 256)], CommandType='Text', CommandTimeout='30']
+      SELECT TOP(1) [a].[Id], [a].[AccessFailedCount], [a].[ConcurrencyStamp], [a].[Email], [a].[EmailConfirmed], [a].[LockoutEnabled], [a].[LockoutEnd], [a].[NormalizedEmail], [a].[NormalizedUserName], [a].[PasswordHash], [a].[PhoneNumber], [a].[PhoneNumberConfirmed], [a].[SecurityStamp], [a].[TwoFactorEnabled], [a].[UserName]
+      FROM [AspNetUsers] AS [a]
+      WHERE [a].[NormalizedUserName] = @__normalizedUserName_0
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Production
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: D:\Hritik\GitProjects\SportStore\SportsSln\SportsStore\bin\Release\net8.0\publish
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[@__normalizedUserName_0='?' (Size = 256)], CommandType='Text', CommandTimeout='30']
+      SELECT TOP(1) [a].[Id], [a].[AccessFailedCount], [a].[ConcurrencyStamp], [a].[Email], [a].[EmailConfirmed], [a].[LockoutEnabled], [a].[LockoutEnd], [a].[NormalizedEmail], [a].[NormalizedUserName], [a].[PasswordHash], [a].[PhoneNumber], [a].[PhoneNumberConfirmed], [a].[SecurityStamp], [a].[TwoFactorEnabled], [a].[UserName]
+      FROM [AspNetUsers] AS [a]
+      WHERE [a].[NormalizedUserName] = @__normalizedUserName_0
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (4ms) [Parameters=[@p0='?' (Size = 450), @p1='?' (DbType = Int32), @p2='?' (Size = 4000), @p3='?' (Size = 256), @p4='?' (DbType = Boolean), @p5='?' (DbType = Boolean), @p6='?' (DbType = DateTimeOffset), @p7='?' (Size = 256), @p8='?' (Size = 256), @p9='?' (Size = 4000), @p10='?' (Size = 4000), @p11='?' (DbType = Boolean), @p12='?' (Size = 4000), @p13='?' (DbType = Boolean), @p14='?' (Size = 256)], CommandType='Text', CommandTimeout='30']
+      SET IMPLICIT_TRANSACTIONS OFF;
+      SET NOCOUNT ON;
+      INSERT INTO [AspNetUsers] ([Id], [AccessFailedCount], [ConcurrencyStamp], [Email], [EmailConfirmed], [LockoutEnabled], [LockoutEnd], [NormalizedEmail], [NormalizedUserName], [PasswordHash], [PhoneNumber], [PhoneNumberConfirmed], [SecurityStamp], [TwoFactorEnabled], [UserName])
+      VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, @p10, @p11, @p12, @p13, @p14);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT COUNT(*)
+      FROM [Products] AS [p]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[@__p_0='?' (DbType = Int32), @__p_1='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      SELECT [p].[ProductID], [p].[Category], [p].[Description], [p].[Name], [p].[Price]
+      FROM [Products] AS [p]
+      ORDER BY [p].[ProductID]
+      OFFSET @__p_0 ROWS FETCH NEXT @__p_1 ROWS ONLY
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (7ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT [p0].[Category]
+      FROM (
+          SELECT DISTINCT [p].[Category]
+          FROM [Products] AS [p]
+      ) AS [p0]
+      ORDER BY [p0].[Category]
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...

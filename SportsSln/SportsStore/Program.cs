@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using SportsStore.Models;
+using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,12 +30,29 @@ builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 //to enable the services and middleware for Blazor, creates the services that Blazor uses
 builder.Services.AddServerSideBlazor();
 
+builder.Services.AddDbContext<AppIdentityDbContext>(options => options.UseSqlServer(builder.Configuration["ConnectionStrings:IdentityConnection"]));
+builder.Services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<AppIdentityDbContext>();
+
 var app = builder.Build();
 
 // app.MapGet("/", () => "Hello World!");
+if (app.Environment.IsProduction())
+{
+    app.UseExceptionHandler("/error");
+}
+app.UseRequestLocalization(opts =>
+{
+    opts.AddSupportedCultures("en-US")
+    .AddSupportedUICultures("en-US")
+    .SetDefaultCulture("en-US");
+});
+
 
 app.UseStaticFiles();
 app.UseSession(); // allows the session system to automatically associate requests with sessions when they arrive from the client
+
+app.UseAuthentication();//to set up the middleware components that implement the security policy
+app.UseAuthorization();//to set up the middleware components that implement the security policy
 
 app.MapControllerRoute("catpage", "{category}/Page{productPage:int}",
     new { Controller = "Home", action = "Index" });
@@ -57,5 +75,7 @@ app.MapFallbackToPage("/admin/{*catchall}", "/Admin/Index");
 
 SeedData.EnsurePopulated(app);
 //dotnet ef database drop --force --context StoreDbContext   =>command in npowershell to restore the powershell
+IdentitySeedData.EnsurePopulated(app);
+//dotnet ef database drop --force --context AppIdentityDbContext   =>command in npowershell to restore the powershell
 
 app.Run();
